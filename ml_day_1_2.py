@@ -57,6 +57,4 @@ encoded_data['Pclass_Category'] = encoded_data['Pclass'].map(pclass_mapping)
 
 # Display the resulting dataset with relevant encoded columns
 print(encoded_data[['Sex', 'Sex_Label', 'Embarked', 'Embarked_Q', 'Embarked_S', 'Embarked_C', 'Pclass', 'Pclass_Category']].head())
-
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
+\
