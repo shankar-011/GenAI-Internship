@@ -40,6 +40,67 @@ sns.boxplot(x='Holiday_Flag', y='Weekly_Sales', data=df)
 # Store-wise sales
 df.groupby('Store')['Weekly_Sales'].sum().plot(kind='bar')
 
+plt.figure(figsize=(8,5))
+sns.histplot(df['Weekly_Sales'],
+             bins=30,
+             kde=True)
+
+plt.title("Distribution of Weekly Sales")
+plt.show()
+
+plt.figure(figsize=(8,5))
+sns.scatterplot(
+    x='Temperature',
+    y='Weekly_Sales',
+    data=df
+)
+
+plt.title("Temperature vs Weekly Sales")
+plt.show()
+
+plt.figure(figsize=(8,5))
+sns.scatterplot(
+    x='Fuel_Price',
+    y='Weekly_Sales',
+    data=df
+)
+
+plt.title("Fuel Price vs Weekly Sales")
+plt.show()
+
+df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y')
+df['Month'] = df['Date'].dt.month
+monthly_sales = df.groupby('Month')['Weekly_Sales'].mean()
+
+plt.figure(figsize=(8,5))
+monthly_sales.plot(marker='o')
+
+plt.title("Average Monthly Sales")
+plt.ylabel("Sales")
+plt.show()
+
+df['Quarter'] = df['Date'].dt.quarter
+quarterly_sales = df.groupby('Quarter')['Weekly_Sales'].mean()
+
+plt.figure(figsize=(8,5))
+quarterly_sales.plot(kind='bar')
+
+plt.title("Quarterly Average Sales")
+plt.ylabel("Sales")
+plt.show()
+
+top10 = (df.groupby('Store')['Weekly_Sales']
+           .sum()
+           .sort_values(ascending=False)
+           .head(10))
+
+plt.figure(figsize=(10,5))
+top10.plot(kind='bar')
+
+plt.title("Top 10 Stores by Total Sales")
+plt.ylabel("Sales")
+plt.show()
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -98,7 +159,6 @@ print("Highly Skewed Columns: \n",highly_skewed)
 print("Negatively Skewed Columns: \n",negatively_skewed)
 
 df[highly_skewed] = df[highly_skewed].apply(lambda x: np.log1p(x))
-
 from sklearn.preprocessing import PowerTransformer
 pt = PowerTransformer(method="yeo-johnson")
 df[negatively_skewed] = pt.fit_transform(df[negatively_skewed])
@@ -127,3 +187,11 @@ print(f"MAE  : {mae:.2f}")
 print(f"RMSE : {rmse:.2f}")
 print(f"R²   : {r2:.4f}")
 
+plt.figure(figsize=(8,6))
+sns.scatterplot(x=y_test, y=y_pred)
+plt.xlabel("Actual Weekly Sales")
+plt.ylabel("Predicted Weekly Sales")
+plt.title("Actual Weekly Sales vs Predicted Weekly Sales")
+plt.axline([0,0],[1,1],color="red",linestyle
+           ="--")
+plt.show()
